@@ -7,7 +7,8 @@ import (
 	"syscall/js"
 	"time"
 
-	"github.com/litusluca/litusluca.github.io/src/glapi"
+	"github.com/litusluca/litusluca.github.io/src/layers"
+	"github.com/litusluca/litusluca.github.io/src/renderer"
 	"github.com/litusluca/litusluca.github.io/src/window"
 )
 
@@ -19,6 +20,7 @@ type Application struct {
 	running bool
 	runtime time.Time
 	lastFrameTime time.Time
+	layerStack layers.LayerStack
 }
 
 func App(handle string, userApp IApp) *Application {
@@ -32,7 +34,9 @@ func App(handle string, userApp IApp) *Application {
 	if err != nil {
 		panic(err)
 	}
-	a.window.GLapi().ClearColor(0.1,0.4,0.1,1.0)
+	renderer.Init(a.window.GLapi())
+	a.layerStack = *layers.NewLayerStack()
+
 	a.userApp = userApp
 	userApp.OnCreate(a)
 	return a
@@ -49,10 +53,11 @@ func (a *Application) Run(){
 		dt := currentTime.Sub(a.lastFrameTime)
 		a.runtime.Add(dt)
 		a.lastFrameTime = currentTime
-		a.window.GLapi().Clear(glapi.COLOR_BUFFER_BIT)
-		a.window.OnUpdate()
-		a.userApp.OnUpdate(dt)
-		//fmt.Println(dt)
+		
+		for i := 0; i < a.layerStack.GetLayerCount(); i++ {
+			a.layerStack.GetLayerByIndex(i).OnUpdate(dt)
+		}
+
 		if a.running {
 			js.Global().Call("requestAnimationFrame", tick)
 		} else {
@@ -77,4 +82,8 @@ func (a *Application) Exit(){
 
 func (a *Application) GetWindow() *window.Window {
 	return a.window
+}
+
+func (a *Application) GetLayerStack() *layers.LayerStack {
+	return &a.layerStack
 }
