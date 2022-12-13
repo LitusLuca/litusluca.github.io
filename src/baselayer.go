@@ -58,6 +58,8 @@ func CreateBaseLayer() *BaseLayer {
 
 	layer.shader = renderer.NewShader("basic", vertexShader, fragmentShader)
 
+	layer.shader = renderer.NewShaderFromFile("test.glsl")
+
 	return layer
 }
 
@@ -67,7 +69,7 @@ func (layer *BaseLayer) OnAttach() {
 
 func (layer *BaseLayer) OnUpdate(dt time.Duration) {
 	layer.runtime += dt.Seconds()
-	fmt.Println(layer.runtime)
+	//fmt.Println(layer.runtime)
 	renderer.SetClearColor(0.3,0.1,0.3,1.)
 	renderer.Clear()
 	layer.shader.Bind()
