@@ -5,6 +5,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/litusluca/litusluca.github.io/src/glapi"
 	"github.com/litusluca/litusluca.github.io/src/utils/loader"
 )
@@ -39,6 +40,38 @@ func NewShader(name, vecSrc, fragSrc string) *ShaderProgram {
 
 func (sp *ShaderProgram) Bind()  {
 	sRenderer.gapi.UseProgram(sp.renderID)
+}
+
+func (sp *ShaderProgram) SetFloat(name string, value float32)  {
+	sRenderer.gapi.Uniform1f(sRenderer.gapi.GetUniformLocation(sp.renderID,name), value)
+}
+
+func (sp *ShaderProgram) SetFloat2(name string, value mgl32.Vec2)  {
+	sRenderer.gapi.Uniform2f(sRenderer.gapi.GetUniformLocation(sp.renderID,name), value[0],value[1])
+}
+
+func (sp *ShaderProgram) SetFloat3(name string, value mgl32.Vec3)  {
+	sRenderer.gapi.Uniform3f(sRenderer.gapi.GetUniformLocation(sp.renderID,name), value[0],value[1],value[2])
+}
+
+func (sp *ShaderProgram) SetFloat4(name string, value mgl32.Vec4)  {
+	sRenderer.gapi.Uniform4f(sRenderer.gapi.GetUniformLocation(sp.renderID,name), value[0],value[1],value[2], value[3])
+}
+
+func (sp *ShaderProgram) SetInt(name string, value int32)  {
+	sRenderer.gapi.Uniform1i(sRenderer.gapi.GetUniformLocation(sp.renderID,name), value)
+}
+
+func (sp *ShaderProgram) SetIntArray(name string, value []int32)  {
+	sRenderer.gapi.Uniform1iv(sRenderer.gapi.GetUniformLocation(sp.renderID,name), value)
+}
+
+func (sp *ShaderProgram) SetMat3(name string, value mgl32.Mat3)  {
+	sRenderer.gapi.UniformMatrix3fv(sRenderer.gapi.GetUniformLocation(sp.renderID,name), glapi.FALSE, value[:])
+}
+
+func (sp *ShaderProgram) SetMat4(name string, value mgl32.Mat4)  {
+	sRenderer.gapi.UniformMatrix4fv(sRenderer.gapi.GetUniformLocation(sp.renderID,name), glapi.FALSE, value[:])
 }
 
 func shaderTypeToGL(sType string) uint32 {

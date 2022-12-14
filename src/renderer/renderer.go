@@ -11,6 +11,7 @@ type Renderer struct {
 func Init(gl *glapi.GLapi) {
 	sRenderer.gapi = gl
 	SetClearColor(0.1,0.1,0.1,1.)
+	gl.Enable(glapi.DEPTH_TEST)
 }
 
 func DrawIndexed(vao *VertexArray)  {

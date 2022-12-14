@@ -20,7 +20,6 @@ type GLapi struct {
 
 func New(webglctx js.Value) (*GLapi, error) {
 	gapi := new(GLapi)
-	gapi.reset()
 	gapi.glctx = webglctx
 	gapi.glObjectMap = make(map[uint32]js.Value)
 	gapi.objectMapIndex = 0
@@ -28,7 +27,12 @@ func New(webglctx js.Value) (*GLapi, error) {
 	return gapi, nil
 }
 
-func (gapi *GLapi) reset()  {
+func (gapi *GLapi) Disable(capability uint32)  {
+	gapi.glctx.Call("disable", capability)
+}
+
+func (gapi *GLapi) Enable(capability uint32)  {
+	gapi.glctx.Call("enable", capability)
 }
 
 func (gapi *GLapi) SetClearColor(r, g, b, a float32)  {
@@ -166,4 +170,53 @@ func (gapi *GLapi) GetShaderInfoLog(id uint32) string {
 
 func (gapi *GLapi) DrawElements(mode, count, indexType, offset uint32)  {
 	gapi.glctx.Call("drawElements",mode, count, indexType, offset)
+}
+
+func (gapi *GLapi) GetUniformLocation(program uint32, name string) interface{} {
+	location := gapi.glctx.Call("getUniformLocation", gapi.glObjectMap[program], name)
+	return location
+}
+
+func (gapi *GLapi) Uniform1f(location interface{}, v0 float32)  {
+	gapi.glctx.Call("uniform1f", location, v0)
+}
+
+func (gapi *GLapi) Uniform2f(location interface{}, v0, v1 float32)  {
+	gapi.glctx.Call("uniform2f", location, v0, v1)
+}
+
+func (gapi *GLapi) Uniform3f(location interface{}, v0, v1, v2 float32)  {
+	gapi.glctx.Call("uniform3f", location, v0, v1, v2)
+}
+
+func (gapi *GLapi) Uniform4f(location interface{}, v0, v1, v2, v3 float32)  {
+	gapi.glctx.Call("uniform4f", location, v0, v1, v2, v3)
+}
+
+func (gapi *GLapi) Uniform1i(location interface{}, v0 int32)  {
+	gapi.glctx.Call("uniform1i", location, v0)
+}
+
+func (gapi *GLapi) Uniform2i(location interface{}, v0, v1 int32)  {
+	gapi.glctx.Call("uniform2i", location, v0, v1)
+}
+
+func (gapi *GLapi) Uniform3i(location interface{}, v0, v1, v2 int32)  {
+	gapi.glctx.Call("uniform3i", location, v0, v1, v2)
+}
+
+func (gapi *GLapi) Uniform4i(location interface{}, v0, v1, v2, v3 int32)  {
+	gapi.glctx.Call("uniform4i", location, v0, v1, v2, v3)
+}
+
+func (gapi *GLapi) Uniform1iv(location interface{}, v0 []int32)  {
+	gapi.glctx.Call("uniform1iv", location, wasm.SliceToTypedArray(v0))
+}
+
+func (GLapi *GLapi) UniformMatrix3fv(location interface{}, transpose uint32, mat []float32)  {
+	GLapi.glctx.Call("uniformMatrix3fv", location, transpose, wasm.SliceToTypedArray(mat))
+}
+
+func (GLapi *GLapi) UniformMatrix4fv(location interface{}, transpose uint32, mat []float32)  {
+	GLapi.glctx.Call("uniformMatrix4fv", location, transpose, wasm.SliceToTypedArray(mat))
 }
