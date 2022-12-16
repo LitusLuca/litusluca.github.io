@@ -102,6 +102,7 @@ func preprocess(source string) map[uint32]string {
 		if i == -1 {
 			shaderSource[shaderTypeToGL(sType)] = temp
 		}else {
+			fmt.Println(i)
 			shaderSource[shaderTypeToGL(sType)] = temp[:i]
 		}
 	}
