@@ -94,6 +94,7 @@ func preprocess(source string) map[uint32]string {
 	keyOffset := len(key)
 	i := strings.Index(source, key)
 	temp := source
+	fmt.Println(i)
 	for ;i != -1;{
 		
 		eol := strings.Index(temp[i:], "\r\n") + i
