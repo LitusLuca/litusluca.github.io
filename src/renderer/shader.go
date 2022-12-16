@@ -88,13 +88,14 @@ func shaderTypeToGL(sType string) uint32 {
 }
 
 func preprocess(source string) map[uint32]string {
+	fmt.Println("!!!", source)
 	shaderSource := make(map[uint32]string)
 	key := "#type"
 	keyOffset := len(key)
 	i := strings.Index(source, key)
 	temp := source
 	for ;i != -1;{
-		fmt.Println(source)
+		
 		eol := strings.Index(temp[i:], "\r\n") + i
 		begin := i + keyOffset + 1
 		fmt.Println(eol)
