@@ -12,10 +12,26 @@
             go.run(result.instance)
         });
     </script>
+    <style>
+        *{
+            margin: 0;
+        }
+        #head{
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+        #game{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+    </style>
 </head>
 <body>
-    <h1 id="fps"></h1>
-    <canvas id="glCanvas" width="640" height="480"></canvas>
+    <h1 id="head">PRESS F FOR FULLSCREEN</h1>
+    <canvas id="game" width="640" height="480"></canvas>
     <script>
         var fpsCounter = document.getElementById("fps")
         function fpsUpdate(fps){
