@@ -7,6 +7,7 @@ import (
 	"syscall/js"
 	"time"
 
+	"github.com/litusluca/litusluca.github.io/src/events"
 	"github.com/litusluca/litusluca.github.io/src/layers"
 	"github.com/litusluca/litusluca.github.io/src/renderer"
 	"github.com/litusluca/litusluca.github.io/src/window"
@@ -23,6 +24,10 @@ type Application struct {
 	layerStack layers.LayerStack
 }
 
+func GetApp() *Application{
+	return a
+}
+
 func App(handle string, userApp IApp) *Application {
 	if a != nil {
 		return a
@@ -31,6 +36,7 @@ func App(handle string, userApp IApp) *Application {
 	a = new(Application)
 	var err error
 	a.window, err = window.InitWindow(handle)
+	a.window.SetEventCallback(a.OnEvent)
 	if err != nil {
 		panic(err)
 	}
@@ -74,6 +80,14 @@ func (a *Application) Run(){
 	//destroywindow
 
 	a.userApp.OnDestroy()
+}
+
+func (a *Application) OnEvent(ev events.Event)  {
+	for i := a.layerStack.GetLayerCount() - 1; i > -1; i--{
+		if !ev.Handled() {
+			a.layerStack.GetLayerByIndex(i).OnEvent(ev)
+		}
+	}
 }
 
 func (a *Application) Exit(){

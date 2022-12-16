@@ -17,6 +17,7 @@ func Init(gl *glapi.GLapi) {
 func DrawIndexed(vao *VertexArray)  {
 	vao.Bind()
 	count := vao.GetIndexBuffer().GetCount()
+	vao.GetIndexBuffer().Bind()
 	sRenderer.gapi.DrawElements(glapi.TRIANGLES, count, glapi.UNSIGNED_INT, 0)
 }
 

@@ -1,11 +1,16 @@
 package layers
 
 //TODO
-import "time"
+import (
+	"time"
+
+	"github.com/litusluca/litusluca.github.io/src/events"
+)
 
 type ILayer interface {
 	OnAttach()
 	OnUpdate(dt time.Duration)
+	OnEvent(ev events.Event)
 	OnDetach()
 }
 

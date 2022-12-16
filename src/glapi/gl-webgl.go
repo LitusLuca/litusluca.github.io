@@ -27,6 +27,10 @@ func New(webglctx js.Value) (*GLapi, error) {
 	return gapi, nil
 }
 
+func (gapi *GLapi)Viewport(x, y, width, height int32)  {
+	gapi.glctx.Call("viewport", x, y, width, height)
+}
+
 func (gapi *GLapi) Disable(capability uint32)  {
 	gapi.glctx.Call("disable", capability)
 }

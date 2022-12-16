@@ -5,13 +5,21 @@ import (
 	"time"
 
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/litusluca/litusluca.github.io/src/app"
+	"github.com/litusluca/litusluca.github.io/src/events"
+	"github.com/litusluca/litusluca.github.io/src/input"
 	"github.com/litusluca/litusluca.github.io/src/renderer"
+	"github.com/litusluca/litusluca.github.io/src/scene/camera"
+	"github.com/litusluca/litusluca.github.io/src/scene/controller"
 )
 
 type BaseLayer struct {
 	runtime float64
 	triangle *renderer.VertexArray
+	plane *renderer.VertexArray
 	shader *renderer.ShaderProgram
+	aspect float32
+	camController *controller.FPSController
 }
 
 func CreateBaseLayer() *BaseLayer {
@@ -82,7 +90,31 @@ func CreateBaseLayer() *BaseLayer {
 	ibo := renderer.NewIBO(indices)
 	layer.triangle.AddIndexBuffer(ibo)
 
+	planeVecs := []float32{
+		-1.,  0., -1., 	0.2,0.7,0.,
+		-1.,  0.,  1., 	0.2,0.7,0.,
+		 1.,  0.,  1., 	0.2,0.7,0.,
+		 1.,  0., -1., 	0.2,0.7,0.,
+	}
+	planeIndices := []uint32{
+		0,1,2,
+		2,3,0,
+	}
+	layer.plane = renderer.NewVAO()
+	planeVbo := renderer.NewVBO(planeVecs)
+	planeIbo := renderer.NewIBO(planeIndices)
+	planeVbo.SetLayout(layout)
+	layer.plane.AddVertexBuffer(planeVbo)
+	layer.plane.AddIndexBuffer(planeIbo)
+
+
 	layer.shader = renderer.NewShaderFromFile("test.glsl")
+	layer.aspect = 640./480.
+
+
+	cam := camera.NewPerspectiveCamera(90, 16/9, 0.1, 100)
+	layer.camController = controller.NewFPSController(cam, mgl32.Vec3{0,0,0}, 0, 0, 0, 0)
+
 
 	return layer
 }
@@ -97,14 +129,35 @@ func (layer *BaseLayer) OnUpdate(dt time.Duration) {
 	renderer.SetClearColor(0.3,0.1,0.3,1.)
 	renderer.Clear()
 	layer.shader.Bind()
-	layer.shader.SetMat4("uViewProjection", mgl32.Perspective(90, 640./480., 0.1, 100))
+	layer.camController.OnUpdate(float32(dt.Seconds()))
+	layer.shader.SetMat4("uViewProjection", layer.camController.Camera.ViewProjection())
+	//fmt.Println(layer.camController.Camera.ViewProjection())
 	model := mgl32.HomogRotate3D(float32(layer.runtime), mgl32.Vec3{0.6,0.4,0.2}.Normalize())
 	model = mgl32.Scale3D(1,1,1).Mul4(model)
-	model = mgl32.Translate3D(0,0,-2).Mul4(model)
+	model = mgl32.Translate3D(0,0,2).Mul4(model)
 	layer.shader.SetMat4("uModel", model)
 	renderer.DrawIndexed(layer.triangle)
+
+	layer.shader.SetMat4("uModel",mgl32.Translate3D(0,-1,0).Mul4(mgl32.Scale3D(10,10,10)))
+	renderer.DrawIndexed(layer.plane)
 }
 
 func (layer *BaseLayer) OnDetach()  {
 	fmt.Println("Detached!")
+}
+
+func (layer *BaseLayer) OnEvent(ev events.Event) {
+	dispatcher := events.Dispatcher{EV:ev}
+	dispatcher.Dispatch(events.KeyPress, layer.OnKeyPress)
+	dispatcher.Dispatch(events.WindowResize, layer.camController.Camera.OnResize)
+	dispatcher.Dispatch(events.MouseMove, layer.camController.OnMouseMove)
+}
+
+func (layer *BaseLayer) OnKeyPress(ev events.Event) bool {
+	KpEV := ev.(*events.KeyPressEvent)
+	switch KpEV.KeyCode {
+	case input.KEY_F:
+		app.GetApp().GetWindow().ToggleFullscreen()
+	}
+	return false
 }
