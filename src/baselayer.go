@@ -108,7 +108,7 @@ func CreateBaseLayer() *BaseLayer {
 	layer.plane.AddIndexBuffer(planeIbo)
 
 
-	layer.shader = renderer.NewShaderFromFile("test.glsl")
+	layer.shader = renderer.NewShaderFromFile("basicColor.glsl")
 	layer.aspect = 640./480.
 
 
