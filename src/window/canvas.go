@@ -87,7 +87,6 @@ func InitWindow(handle string) (*Window, error){
 			win.SetSize(640,480)
 			win.gl.Viewport(0,0, win.width, win.height)
 		}
-		fmt.Println(win.width, win.height)
 		Resize := events.WindowResizeEvent{H: false, Width: win.width, Height: win.height}
 		win.eventCallback(&Resize)
 		

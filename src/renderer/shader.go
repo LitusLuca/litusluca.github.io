@@ -17,7 +17,6 @@ type ShaderProgram struct {
 
 func NewShaderFromFile(shaderSourcePath string) *ShaderProgram {
 	source := readFile(shaderSourcePath)
-	fmt.Println(source)
 	shaderSource := preprocess(source)
 
 	shader := new(ShaderProgram)
@@ -88,25 +87,21 @@ func shaderTypeToGL(sType string) uint32 {
 }
 
 func preprocess(source string) map[uint32]string {
-	fmt.Println("!!!", source)
 	shaderSource := make(map[uint32]string)
 	key := "#type"
 	keyOffset := len(key)
 	i := strings.Index(source, key)
 	temp := source
-	fmt.Println("i:",i)
 	for ;i != -1;{
 		
 		eol := strings.Index(temp[i:], "\r\n") + i
 		begin := i + keyOffset + 1
-		fmt.Println("Eol:",eol)
 		sType := temp[begin : eol]
 		temp = strings.TrimLeft(temp[eol:], "\r\n")
 		i = strings.Index(temp, key)
 		if i == -1 {
 			shaderSource[shaderTypeToGL(sType)] = temp
 		}else {
-			fmt.Println(i)
 			shaderSource[shaderTypeToGL(sType)] = temp[:i]
 		}
 	}

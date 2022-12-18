@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -32,7 +31,6 @@ func NewFPSController(cam *camera.PerspectiveCamera, position mgl32.Vec3, startY
 
 	controller.worldUp = mgl32.Vec3{0,1,0}
 	controller.updateFront()
-	fmt.Println(controller.position)
 	return controller
 }
 
@@ -48,7 +46,6 @@ func (controller *FPSController) updateFront()  {
 }
 
 func (controller *FPSController) OnUpdate(dt float32)  {
-	//fmt.Println(controller.position)
 	controller.updateFront()
 	move := mgl32.Vec3{0}
 	if input.IsKeyPressed(input.KEY_W) {

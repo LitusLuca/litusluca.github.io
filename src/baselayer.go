@@ -125,13 +125,11 @@ func (layer *BaseLayer) OnAttach() {
 
 func (layer *BaseLayer) OnUpdate(dt time.Duration) {
 	layer.runtime += dt.Seconds()
-	//fmt.Println(layer.runtime)
 	renderer.SetClearColor(0.3,0.1,0.3,1.)
 	renderer.Clear()
 	layer.shader.Bind()
 	layer.camController.OnUpdate(float32(dt.Seconds()))
 	layer.shader.SetMat4("uViewProjection", layer.camController.Camera.ViewProjection())
-	//fmt.Println(layer.camController.Camera.ViewProjection())
 	model := mgl32.HomogRotate3D(float32(layer.runtime), mgl32.Vec3{0.6,0.4,0.2}.Normalize())
 	model = mgl32.Scale3D(1,1,1).Mul4(model)
 	model = mgl32.Translate3D(0,0,2).Mul4(model)
