@@ -17,9 +17,6 @@ func (ev *MousePressEvent) SetHandled(handled bool) {
 	}
 }
 
-func (ev *MousePressEvent) Type() EventType {
-	return MousePress
-}
 
 type MouseReleaseEvent struct {
 	H       bool
@@ -34,10 +31,6 @@ func (ev *MouseReleaseEvent) SetHandled(handled bool) {
 	if !ev.H {
 		ev.H = handled
 	}
-}
-
-func (ev *MouseReleaseEvent) Type() EventType {
-	return MouseRelease
 }
 
 type MouseScrollEvent struct {
@@ -73,8 +66,4 @@ func (ev *MouseMoveEvent) SetHandled(handled bool) {
 	if !ev.H {
 		ev.H = handled
 	}
-}
-
-func (ev *MouseMoveEvent) Type() EventType {
-	return MouseMove
 }

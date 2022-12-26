@@ -68,12 +68,11 @@ func (controller *FPSController) OnUpdate(dt float32)  {
 	controller.Camera.LookAt(controller.position, controller.position.Add(controller.front), controller.up)
 }
 
-func (controller *FPSController) OnMouseMove(ev events.Event) bool {
-	moveEv := ev.(*events.MouseMoveEvent)
-	dx := moveEv.DX
-	dy := -moveEv.DY
-	controller.mouseX = moveEv.X
-	controller.mouseY = moveEv.Y
+func (controller *FPSController) OnMouseMove(ev *events.MouseMoveEvent) bool {
+	dx := ev.DX
+	dy := -ev.DY
+	controller.mouseX = ev.X
+	controller.mouseY = ev.Y
 	controller.yaw -= dx * controller.Sensivity
 	controller.pitch += dy * controller.Sensivity
 

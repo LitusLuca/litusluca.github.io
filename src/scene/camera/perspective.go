@@ -37,9 +37,8 @@ func (cam *PerspectiveCamera) ViewProjection() mgl32.Mat4 {
 	return cam.viewProjection
 }
 
-func (cam *PerspectiveCamera) OnResize(ev events.Event) bool {
-	resize := ev.(*events.WindowResizeEvent)
-	aspect := float32(resize.Width)/float32(resize.Height)
+func (cam *PerspectiveCamera) OnResize(ev *events.WindowResizeEvent) bool {
+	aspect := float32(ev.Width)/float32(ev.Height)
 	cam.projection = mgl32.Perspective(cam.fov, aspect, cam.near, cam.far)
 	return false
 }

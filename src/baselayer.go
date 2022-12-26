@@ -151,15 +151,14 @@ func (layer *BaseLayer) OnDetach()  {
 }
 
 func (layer *BaseLayer) OnEvent(ev events.Event) {
-	dispatcher := events.Dispatcher{EV:ev}
-	dispatcher.Dispatch(events.KeyPress, layer.OnKeyPress)
-	dispatcher.Dispatch(events.WindowResize, layer.camController.Camera.OnResize)
-	dispatcher.Dispatch(events.MouseMove, layer.camController.OnMouseMove)
+	dispatcher := events.NewDispatcher(ev)
+	events.Dispatch(dispatcher, layer.OnKeyPress)
+	events.Dispatch(dispatcher, layer.camController.Camera.OnResize)
+	events.Dispatch(dispatcher, layer.camController.OnMouseMove)
 }
 
-func (layer *BaseLayer) OnKeyPress(ev events.Event) bool {
-	KpEV := ev.(*events.KeyPressEvent)
-	switch KpEV.KeyCode {
+func (layer *BaseLayer) OnKeyPress(ev *events.KeyPressEvent) bool {
+	switch ev.KeyCode {
 	case input.KEY_F:
 		app.GetApp().GetWindow().ToggleFullscreen()
 	}

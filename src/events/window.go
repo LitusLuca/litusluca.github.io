@@ -14,7 +14,3 @@ func (ev *WindowResizeEvent) SetHandled(handled bool) {
 		ev.H = handled
 	}
 }
-
-func (ev *WindowResizeEvent) Type() EventType {
-	return WindowResize
-}

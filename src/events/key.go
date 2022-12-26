@@ -17,10 +17,6 @@ func (ev *KeyPressEvent) SetHandled(handled bool) {
 	}
 }
 
-func (ev *KeyPressEvent) Type() EventType {
-	return KeyPress
-}
-
 type KeyReleaseEvent struct {
 	H bool
 	KeyCode input.KeyCode
@@ -34,8 +30,4 @@ func (ev *KeyReleaseEvent) SetHandled(handled bool) {
 	if !ev.H {
 		ev.H = handled
 	}
-}
-
-func (ev *KeyReleaseEvent) Type() EventType {
-	return KeyRelease
 }
