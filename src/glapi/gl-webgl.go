@@ -217,10 +217,41 @@ func (gapi *GLapi) Uniform1iv(location interface{}, v0 []int32)  {
 	gapi.glctx.Call("uniform1iv", location, wasm.SliceToTypedArray(v0))
 }
 
-func (GLapi *GLapi) UniformMatrix3fv(location interface{}, transpose uint32, mat []float32)  {
-	GLapi.glctx.Call("uniformMatrix3fv", location, transpose, wasm.SliceToTypedArray(mat))
+func (gapi *GLapi) UniformMatrix3fv(location interface{}, transpose uint32, mat []float32)  {
+	gapi.glctx.Call("uniformMatrix3fv", location, transpose, wasm.SliceToTypedArray(mat))
 }
 
-func (GLapi *GLapi) UniformMatrix4fv(location interface{}, transpose uint32, mat []float32)  {
-	GLapi.glctx.Call("uniformMatrix4fv", location, transpose, wasm.SliceToTypedArray(mat))
+func (gapi *GLapi) UniformMatrix4fv(location interface{}, transpose uint32, mat []float32)  {
+	gapi.glctx.Call("uniformMatrix4fv", location, transpose, wasm.SliceToTypedArray(mat))
+}
+
+func (gapi *GLapi) CreateTexture() uint32 {
+	gapi.glObjectMap[gapi.objectMapIndex] = gapi.glctx.Call("createTexture")
+	index := gapi.objectMapIndex
+	gapi.objectMapIndex++
+	return index
+}
+
+func (gapi *GLapi) BindTexture(target, texture uint32)  {
+	gapi.glctx.Call("bindTexture", target, gapi.glObjectMap[texture])
+}
+
+func (gapi *GLapi) TexStorage2D(target, levels, internalformat, width, height uint32)  {
+	gapi.glctx.Call("texStorage2D", target, levels, internalformat, width, height)
+}
+
+func (gapi *GLapi) TexParameteri(target, pname uint32, params int32)  {
+	gapi.glctx.Call("texParameteri", target, pname, params)
+}
+
+func (gapi *GLapi) TexSubImage2D(target uint32, level, xoffset, yoffset int32, width, height uint32, format uint32, datatype uint32, data interface{})  {
+	gapi.glctx.Call("texSubImage2D", target, level, xoffset, yoffset, width, height, format, datatype, wasm.SliceToTypedArray(data))
+}
+
+func (gapi *GLapi) GenerateMipmap(target uint32)  {
+	gapi.glctx.Call("generateMipmap", target)
+}
+
+func (gapi *GLapi) ActiveTexture(texUnit uint32)  {
+	gapi.glctx.Call("activeTexture", texUnit)
 }

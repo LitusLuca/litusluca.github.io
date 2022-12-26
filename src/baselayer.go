@@ -20,6 +20,8 @@ type BaseLayer struct {
 	shader *renderer.ShaderProgram
 	aspect float32
 	camController *controller.FPSController
+	tex *renderer.Texture2D
+	ground *renderer.Texture2D
 }
 
 func CreateBaseLayer() *BaseLayer {
@@ -29,40 +31,41 @@ func CreateBaseLayer() *BaseLayer {
 	layer.triangle = renderer.NewVAO()
 
 	positions := []float32{
-	-0.5, -0.5, -0.5, 0.5,0.,0.,
-     0.5, -0.5, -0.5, 0.5,0.,0.,
-     0.5,  0.5, -0.5, 0.5,0.,0.,
-    -0.5,  0.5, -0.5, 0.5,0.,0.,
+	-0.5, -0.5, -0.5, 1.,1.,
+     0.5, -0.5, -0.5, 0., 1.,
+     0.5,  0.5, -0.5, 0., 0.,
+    -0.5,  0.5, -0.5, 1., 0.,
 
-    -0.5, -0.5,  0.5, 0.5,0.,0.,
-     0.5, -0.5,  0.5, 0.5,0.,0.,
-     0.5,  0.5,  0.5, 0.5,0.,0.,
-    -0.5,  0.5,  0.5, 0.5,0.,0.,
+    -0.5, -0.5,  0.5, 1.,1.,
+     0.5, -0.5,  0.5, 0., 1.,
+     0.5,  0.5,  0.5, 0., 0.,
+    -0.5,  0.5,  0.5, 1., 0.,
 
-    -0.5,  0.5,  0.5, 0.,0.5,0.,
-    -0.5,  0.5, -0.5, 0.,0.5,0.,
-    -0.5, -0.5, -0.5, 0.,0.5,0.,
-    -0.5, -0.5,  0.5, 0.,0.5,0.,
+    -0.5,  0.5,  0.5, 1.,1.,
+    -0.5,  0.5, -0.5, 0., 1.,
+    -0.5, -0.5, -0.5, 0., 0.,
+    -0.5, -0.5,  0.5, 1., 0.,
 
-     0.5,  0.5,  0.5, 0.,0.5,0.,
-     0.5,  0.5, -0.5, 0.,0.5,0.,
-     0.5, -0.5, -0.5, 0.,0.5,0.,
-     0.5, -0.5,  0.5, 0.,0.5,0.,
+     0.5,  0.5,  0.5, 1.,1.,
+     0.5,  0.5, -0.5, 0., 1.,
+     0.5, -0.5, -0.5, 0., 0.,
+     0.5, -0.5,  0.5, 1., 0.,
 
-    -0.5, -0.5, -0.5, 0.,0.,0.5,
-     0.5, -0.5, -0.5, 0.,0.,0.5,
-     0.5, -0.5,  0.5, 0.,0.,0.5,
-    -0.5, -0.5,  0.5, 0.,0.,0.5,
+    -0.5, -0.5, -0.5, 1.,1.,
+     0.5, -0.5, -0.5, 0., 1.,
+     0.5, -0.5,  0.5, 0., 0.,
+    -0.5, -0.5,  0.5, 1., 0.,
 
-    -0.5,  0.5, -0.5, 0.,0.,0.5,
-     0.5,  0.5, -0.5, 0.,0.,0.5,
-     0.5,  0.5,  0.5, 0.,0.,0.5,
-    -0.5,  0.5,  0.5, 0.,0.,0.5,
+    -0.5,  0.5, -0.5, 1.,1.,
+     0.5,  0.5, -0.5, 0., 1.,
+     0.5,  0.5,  0.5, 0., 0.,
+    -0.5,  0.5,  0.5, 1., 0.,
 }
 	vbo := renderer.NewVBO(positions)
 	
-	layout := renderer.NewBufferLayout([]renderer.BufferElement{renderer.MakeBufferElement(renderer.TypeFloat3, "Pos"),
-	 renderer.MakeBufferElement(renderer.TypeFloat3, "Color")})
+	layout := renderer.NewBufferLayout([]renderer.BufferElement{
+		renderer.MakeBufferElement(renderer.TypeFloat3, "Pos"), 
+		renderer.MakeBufferElement(renderer.TypeFloat2, "TexCoord")})
 
 	vbo.SetLayout(layout)
 
@@ -91,10 +94,10 @@ func CreateBaseLayer() *BaseLayer {
 	layer.triangle.AddIndexBuffer(ibo)
 
 	planeVecs := []float32{
-		-1.,  0., -1., 	0.2,0.7,0.,
-		-1.,  0.,  1., 	0.2,0.7,0.,
-		 1.,  0.,  1., 	0.2,0.7,0.,
-		 1.,  0., -1., 	0.2,0.7,0.,
+		-1.,  0., -1.,  10.,10.,
+		-1.,  0.,  1.,  0., 10.,
+		 1.,  0.,  1.,  0., 0.,
+		 1.,  0., -1.,  10., 0.,
 	}
 	planeIndices := []uint32{
 		0,1,2,
@@ -115,6 +118,8 @@ func CreateBaseLayer() *BaseLayer {
 	cam := camera.NewPerspectiveCamera(90, 16/9, 0.1, 100)
 	layer.camController = controller.NewFPSController(cam, mgl32.Vec3{0,0,0}, 0, 0, 0, 0)
 
+	layer.tex = renderer.NewTexture2D("container.jpeg", renderer.TrueColor)
+	layer.ground = renderer.NewTexture2D("rock.tif", renderer.TrueColor)
 
 	return layer
 }
@@ -134,8 +139,9 @@ func (layer *BaseLayer) OnUpdate(dt time.Duration) {
 	model = mgl32.Scale3D(1,1,1).Mul4(model)
 	model = mgl32.Translate3D(0,0,2).Mul4(model)
 	layer.shader.SetMat4("uModel", model)
+	layer.tex.Bind(0)
 	renderer.DrawIndexed(layer.triangle)
-
+	layer.ground.Bind(0)
 	layer.shader.SetMat4("uModel",mgl32.Translate3D(0,-1,0).Mul4(mgl32.Scale3D(10,10,10)))
 	renderer.DrawIndexed(layer.plane)
 }

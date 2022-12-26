@@ -11,7 +11,7 @@ import (
 
 
 
-func ReadFile(path string) (io.Reader, error) {
+func OpenFile(path string) (io.ReadCloser, error) {
 	root := js.Global().Get("location").Get("origin").String()
 	url := root + "/" + path
 	res, err := http.Get(url)

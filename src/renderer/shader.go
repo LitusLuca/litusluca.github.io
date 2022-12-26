@@ -108,10 +108,12 @@ func preprocess(source string) map[uint32]string {
 	return shaderSource
 }
 func readFile(path string) string {
-	file, err := loader.ReadFile("/shaders/" + path)
+	file, err := loader.OpenFile("/shaders/" + path)
 	if err != nil {
 		fmt.Println(err)
+		return ""
 	}
+	defer file.Close()
 	buffer, _ := io.ReadAll(file)
 	return string(buffer)
 }

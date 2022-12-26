@@ -48,4 +48,19 @@ const (
 	DEPTH_TEST   = 0xb71
 	SCISSOR_TEST = 0xc11
 	STENCIL_TEST = 0xb90
+
+	R8    = 0x8229
+	RG8   = 0x822b
+	RGB8  = 0x8051
+	RGBA8 = 0x8058
+	RED   = 0x1903
+	RG    = 0x8227
+	RGB   = 0x1907
+	RGBA  = 0x1908
+
+	TEXTURE_1D = 0xde0
+	TEXTURE_2D = 0xde1
+	TEXTURE_3D = 0x806f
+
+	TEXTURE0 = 0x84c0
 )
