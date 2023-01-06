@@ -68,7 +68,7 @@ func (controller *FPSController) OnUpdate(dt float32)  {
 	controller.Camera.LookAt(controller.position, controller.position.Add(controller.front), controller.up)
 }
 
-func (controller *FPSController) OnMouseMove(ev *events.MouseMoveEvent) bool {
+func (controller *FPSController) OnMouseMove(ev *events.MouseMoveEvent) uint8 {
 	dx := ev.DX
 	dy := -ev.DY
 	controller.mouseX = ev.X
@@ -81,5 +81,5 @@ func (controller *FPSController) OnMouseMove(ev *events.MouseMoveEvent) bool {
 	}else if controller.pitch < -89{
 		controller.pitch = -89
 	}
-	return false
+	return events.UnHandled
 }

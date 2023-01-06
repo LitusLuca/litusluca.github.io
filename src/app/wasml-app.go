@@ -82,9 +82,9 @@ func (a *Application) Run(){
 	a.userApp.OnDestroy()
 }
 
-func (a *Application) OnEvent(ev events.Event)  {
+func (a *Application) OnEvent(ev events.IEvent)  {
 	for i := a.layerStack.GetLayerCount() - 1; i > -1; i--{
-		if !ev.Handled() {
+		if ev.Handled() == events.UnHandled {
 			a.layerStack.GetLayerByIndex(i).OnEvent(ev)
 		}
 	}

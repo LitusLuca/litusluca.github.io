@@ -150,17 +150,17 @@ func (layer *BaseLayer) OnDetach()  {
 	fmt.Println("Detached!")
 }
 
-func (layer *BaseLayer) OnEvent(ev events.Event) {
+func (layer *BaseLayer) OnEvent(ev events.IEvent) {
 	dispatcher := events.NewDispatcher(ev)
 	events.Dispatch(dispatcher, layer.OnKeyPress)
 	events.Dispatch(dispatcher, layer.camController.Camera.OnResize)
 	events.Dispatch(dispatcher, layer.camController.OnMouseMove)
 }
 
-func (layer *BaseLayer) OnKeyPress(ev *events.KeyPressEvent) bool {
+func (layer *BaseLayer) OnKeyPress(ev *events.KeyPressEvent) uint8 {
 	switch ev.KeyCode {
 	case input.KEY_F:
 		app.GetApp().GetWindow().ToggleFullscreen()
 	}
-	return false
+	return events.UnHandled
 }

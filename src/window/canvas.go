@@ -17,7 +17,7 @@ type Window struct {
 	handle string
 	width, height int32
 	gl *glapi.GLapi
-	eventCallback func(ev events.Event)
+	eventCallback func(ev events.IEvent)
 	fullScreen bool
 }
 
@@ -51,7 +51,7 @@ func InitWindow(handle string) (*Window, error){
 		ev := args[0]
 
 		evCode := ev.Get("code").String()
-		KeyPress := events.KeyPressEvent{H: false, KeyCode: keyMap[evCode]}
+		KeyPress := events.KeyPressEvent{H: events.UnHandled, KeyCode: keyMap[evCode]}
 		input.OnKeyEvent(keyMap[evCode],true)
 		win.eventCallback(&KeyPress)
 		return nil
@@ -61,7 +61,7 @@ func InitWindow(handle string) (*Window, error){
 		ev := args[0]
 
 		evCode := ev.Get("code").String()
-		keyrelease := events.KeyReleaseEvent{H: false, KeyCode: keyMap[evCode]}
+		keyrelease := events.KeyReleaseEvent{H: events.UnHandled, KeyCode: keyMap[evCode]}
 		input.OnKeyEvent(keyMap[evCode],false)
 		win.eventCallback(&keyrelease)
 		return nil
@@ -70,7 +70,7 @@ func InitWindow(handle string) (*Window, error){
 	
 	win.canvas.Call("addEventListener", "mousemove", js.FuncOf(func(this js.Value, args []js.Value) any {
 		ev := args[0]
-		mousemove := events.MouseMoveEvent{H: false, X: float32(ev.Get("screenX").Float()), Y: float32(ev.Get("screenY").Float()),
+		mousemove := events.MouseMoveEvent{H: events.UnHandled, X: float32(ev.Get("screenX").Float()), Y: float32(ev.Get("screenY").Float()),
 											DX: float32(ev.Get("movementX").Float()), DY: float32(ev.Get("movementY").Float())}
 		win.eventCallback(&mousemove)
 		return nil
@@ -87,7 +87,7 @@ func InitWindow(handle string) (*Window, error){
 			win.SetSize(640,480)
 			win.gl.Viewport(0,0, win.width, win.height)
 		}
-		Resize := events.WindowResizeEvent{H: false, Width: win.width, Height: win.height}
+		Resize := events.WindowResizeEvent{H: events.UnHandled, Width: win.width, Height: win.height}
 		win.eventCallback(&Resize)
 		
 		return nil
@@ -99,7 +99,7 @@ func InitWindow(handle string) (*Window, error){
 
 	return win, nil
 }
-func (win *Window) SetEventCallback(cb func(ev events.Event))  {
+func (win *Window) SetEventCallback(cb func(ev events.IEvent))  {
 	win.eventCallback = cb
 }
 

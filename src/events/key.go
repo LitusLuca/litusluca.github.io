@@ -3,31 +3,27 @@ package events
 import "github.com/litusluca/litusluca.github.io/src/input"
 
 type KeyPressEvent struct {
-	H bool
+	H uint8
 	KeyCode input.KeyCode
 }
 
-func (ev *KeyPressEvent) Handled() bool {
+func (ev *KeyPressEvent) Handled() uint8 {
 	return ev.H
 }
 
-func (ev *KeyPressEvent) SetHandled(handled bool) {
-	if !ev.H {
-		ev.H = handled
-	}
+func (ev *KeyPressEvent) SetHandled(handled uint8) {
+	ev.H |= handled
 }
 
 type KeyReleaseEvent struct {
-	H bool
+	H uint8
 	KeyCode input.KeyCode
 }
 
-func (ev *KeyReleaseEvent) Handled() bool {
+func (ev *KeyReleaseEvent) Handled() uint8 {
 	return ev.H
 }
 
-func (ev *KeyReleaseEvent) SetHandled(handled bool) {
-	if !ev.H {
-		ev.H = handled
-	}
+func (ev *KeyReleaseEvent) SetHandled(handled uint8) {
+	ev.H |= handled
 }

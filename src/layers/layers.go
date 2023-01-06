@@ -10,7 +10,7 @@ import (
 type ILayer interface {
 	OnAttach()
 	OnUpdate(dt time.Duration)
-	OnEvent(ev events.Event)
+	OnEvent(ev events.IEvent)
 	OnDetach()
 }
 
